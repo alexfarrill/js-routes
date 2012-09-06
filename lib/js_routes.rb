@@ -6,26 +6,47 @@ class JsRoutes
 
   DEFAULT_PATH = File.join('app','assets','javascripts','routes.js')
 
-  DEFAULTS = {
-    :namespace => "Routes",
-    :default_format => "",
-    :exclude => [],
-    :include => //,
-    :file => DEFAULT_PATH,
-    :prefix => ""
-  }
+  if defined? ActiveSupport::OrderedHash
+    DEFAULTS = ActiveSupport::OrderedHash.new
+    DEFAULTS[:namespace] = "Routes"
+    DEFAULTS[:default_format] = ""
+    DEFAULTS[:exclude] = []
+    DEFAULTS[:include] = //
+    DEFAULTS[:file] = DEFAULT_PATH
+    DEFAULTS[:prefix] = ""
+    
+    # We encode node symbols as integer to reduce the routes.js file size
+    NODE_TYPES = ActiveSupport::OrderedHash.new
+    NODE_TYPES[:GROUP] = 1
+    NODE_TYPES[:CAT] = 2
+    NODE_TYPES[:SYMBOL] = 3
+    NODE_TYPES[:OR] = 4
+    NODE_TYPES[:STAR] = 5
+    NODE_TYPES[:LITERAL] = 6
+    NODE_TYPES[:SLASH] = 7
+    NODE_TYPES[:DOT] = 8
+  else
+    DEFAULTS = {
+      :namespace => "Routes",
+      :default_format => "",
+      :exclude => [],
+      :include => //,
+      :file => DEFAULT_PATH,
+      :prefix => ""
+    }
 
-  # We encode node symbols as integer to reduce the routes.js file size
-  NODE_TYPES = {
-    :GROUP => 1,
-    :CAT => 2,
-    :SYMBOL => 3,
-    :OR => 4,
-    :STAR => 5,
-    :LITERAL => 6,
-    :SLASH => 7,
-    :DOT => 8
-  }
+    # We encode node symbols as integer to reduce the routes.js file size
+    NODE_TYPES = {
+      :GROUP => 1,
+      :CAT => 2,
+      :SYMBOL => 3,
+      :OR => 4,
+      :STAR => 5,
+      :LITERAL => 6,
+      :SLASH => 7,
+      :DOT => 8
+    }
+  end
 
   class Options < Struct.new(*DEFAULTS.keys)
     def to_hash
